@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { StyleSheet, View, Alert, Text } from 'react-native';
 
+import Avatar from '~/components/Avatar';
 import { Button } from '~/components/nativewindui/Button';
 import { TextField } from '~/components/nativewindui/TextField';
 import { useAuthStore } from '~/stores/useAuthStore';
@@ -35,12 +36,15 @@ export default function Account() {
       const { error } = await supabase.from('profiles').upsert(updates);
 
       if (error) {
+        console.log('Error updating profile', error);
         throw error;
       }
 
       setProfile({ username, website, avatar_url });
+      console.log('Profile updated', profile);
     } catch (error) {
       if (error instanceof Error) {
+        console.log('Error updating profile', error);
         Alert.alert(error.message);
       }
     }
@@ -48,6 +52,16 @@ export default function Account() {
 
   return (
     <View style={styles.container}>
+      <View>
+        <Avatar
+          size={200}
+          url={avatarUrl}
+          onUpload={(url: string) => {
+            setAvatarUrl(url);
+            updateProfile({ username, website, avatar_url: url });
+          }}
+        />
+      </View>
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <TextField label="Email" value={session?.user?.email} />
       </View>
