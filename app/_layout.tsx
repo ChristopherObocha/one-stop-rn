@@ -4,15 +4,20 @@ import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { ThemeProvider as NavThemeProvider } from '@react-navigation/native';
 import { Icon } from '@roninoss/icons';
+import { Session } from '@supabase/supabase-js';
 import { Link, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useState, useEffect } from 'react';
 import { Pressable, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+import Account from '~/components/Account';
+import Auth from '~/components/Auth';
 import { ThemeToggle } from '~/components/ThemeToggle';
 import { cn } from '~/lib/cn';
 import { useColorScheme, useInitialAndroidBarSync } from '~/lib/useColorScheme';
 import { NAV_THEME } from '~/theme';
+import { supabase } from '~/utils/supabase';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -22,6 +27,29 @@ export {
 export default function RootLayout() {
   useInitialAndroidBarSync();
   const { colorScheme, isDarkColorScheme } = useColorScheme();
+
+  const [session, setSession] = useState<Session | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+  }, []);
+
+  const MainApp = () => {
+    return (
+      <>
+        <Stack screenOptions={SCREEN_OPTIONS}>
+          <Stack.Screen name="(tabs)" options={TABS_OPTIONS} />
+          <Stack.Screen name="modal" options={MODAL_OPTIONS} />
+        </Stack>
+      </>
+    );
+  };
 
   return (
     <>
@@ -36,10 +64,11 @@ export default function RootLayout() {
         <BottomSheetModalProvider>
           <ActionSheetProvider>
             <NavThemeProvider value={NAV_THEME[colorScheme]}>
-              <Stack screenOptions={SCREEN_OPTIONS}>
+              {session ? <MainApp /> : <Auth />}
+              {/* <Stack screenOptions={SCREEN_OPTIONS}>
                 <Stack.Screen name="(tabs)" options={TABS_OPTIONS} />
                 <Stack.Screen name="modal" options={MODAL_OPTIONS} />
-              </Stack>
+              </Stack> */}
             </NavThemeProvider>
           </ActionSheetProvider>
         </BottomSheetModalProvider>
