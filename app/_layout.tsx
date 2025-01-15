@@ -27,28 +27,16 @@ export {
 export default function RootLayout() {
   useInitialAndroidBarSync();
   const { colorScheme, isDarkColorScheme } = useColorScheme();
-
-  const [session, setSession] = useState<Session | null>(null);
-  const setAuthStoreSession = useAuthStore((state) => state.setSession);
+  const { session, initialize, initialized } = useAuthStore();
 
   useEffect(() => {
-    // Set initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setAuthStoreSession(session);
-      setSession(session);
-    });
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setAuthStoreSession(session);
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
+    initialize();
   }, []);
+
+  // Don't render until auth is initialized
+  if (!initialized) {
+    return null; // or a loading spinner
+  }
 
   const MainApp = () => {
     return (
@@ -67,24 +55,15 @@ export default function RootLayout() {
         key={`root-status-bar-${isDarkColorScheme ? 'light' : 'dark'}`}
         style={isDarkColorScheme ? 'light' : 'dark'}
       />
-      {/* WRAP YOUR APP WITH ANY ADDITIONAL PROVIDERS HERE */}
-      {/* <ExampleProvider> */}
-
       <GestureHandlerRootView style={{ flex: 1 }}>
         <BottomSheetModalProvider>
           <ActionSheetProvider>
             <NavThemeProvider value={NAV_THEME[colorScheme]}>
               {session ? <MainApp /> : <Auth />}
-              {/* <Stack screenOptions={SCREEN_OPTIONS}>
-                <Stack.Screen name="(tabs)" options={TABS_OPTIONS} />
-                <Stack.Screen name="modal" options={MODAL_OPTIONS} />
-              </Stack> */}
             </NavThemeProvider>
           </ActionSheetProvider>
         </BottomSheetModalProvider>
       </GestureHandlerRootView>
-
-      {/* </ExampleProvider> */}
     </>
   );
 }

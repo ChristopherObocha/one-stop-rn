@@ -1,46 +1,16 @@
 import { useState } from 'react';
 import { StyleSheet, View, Alert, Text } from 'react-native';
-import { useAuthStore } from '~/stores/useAuthStore';
 
 import { Button } from '~/components/nativewindui/Button';
 import { TextField } from '~/components/nativewindui/TextField';
+import { useAuthStore } from '~/stores/useAuthStore';
 import { supabase } from '~/utils/supabase';
 
 export default function Account() {
-  const [loading, setLoading] = useState(true);
-  const { session, profile, setProfile } = useAuthStore();
+  const { session, profile, setProfile, loading } = useAuthStore();
   const [username, setUsername] = useState(profile?.username ?? '');
   const [website, setWebsite] = useState(profile?.website ?? '');
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url ?? '');
-
-  async function getProfile() {
-    try {
-      setLoading(true);
-      if (!session?.user) throw new Error('No user on the session!');
-
-      const { data, error, status } = await supabase
-        .from('profiles')
-        .select(`username, website, avatar_url`)
-        .eq('id', session?.user.id)
-        .single();
-      if (error && status !== 406) {
-        throw error;
-      }
-
-      if (data) {
-        setUsername(data.username);
-        setWebsite(data.website);
-        setAvatarUrl(data.avatar_url);
-        setProfile(data);
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        Alert.alert(error.message);
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
 
   async function updateProfile({
     username,
@@ -52,7 +22,6 @@ export default function Account() {
     avatar_url: string;
   }) {
     try {
-      setLoading(true);
       if (!session?.user) throw new Error('No user on the session!');
 
       const updates = {
@@ -74,8 +43,6 @@ export default function Account() {
       if (error instanceof Error) {
         Alert.alert(error.message);
       }
-    } finally {
-      setLoading(false);
     }
   }
 
