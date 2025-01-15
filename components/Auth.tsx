@@ -28,6 +28,7 @@ export default function Auth() {
       email,
       password,
     });
+    console.log('ran');
 
     if (error) Alert.alert(error.message);
     setLoading(false);

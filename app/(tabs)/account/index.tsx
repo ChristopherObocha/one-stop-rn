@@ -1,6 +1,6 @@
-import { Session } from '@supabase/supabase-js';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { StyleSheet, View, Alert, Text } from 'react-native';
+import { useAuthStore } from '~/stores/useAuthStore';
 
 import { Button } from '~/components/nativewindui/Button';
 import { TextField } from '~/components/nativewindui/TextField';
@@ -8,21 +8,10 @@ import { supabase } from '~/utils/supabase';
 
 export default function Account() {
   const [loading, setLoading] = useState(true);
-  const [username, setUsername] = useState('');
-  const [website, setWebsite] = useState('');
-  const [avatarUrl, setAvatarUrl] = useState('');
-  const [session, setSession] = useState<Session | null>(null);
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      if (session) getProfile();
-    });
-
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-  }, []);
+  const { session, profile, setProfile } = useAuthStore();
+  const [username, setUsername] = useState(profile?.username ?? '');
+  const [website, setWebsite] = useState(profile?.website ?? '');
+  const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url ?? '');
 
   async function getProfile() {
     try {
@@ -42,6 +31,7 @@ export default function Account() {
         setUsername(data.username);
         setWebsite(data.website);
         setAvatarUrl(data.avatar_url);
+        setProfile(data);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -78,6 +68,8 @@ export default function Account() {
       if (error) {
         throw error;
       }
+
+      setProfile({ username, website, avatar_url });
     } catch (error) {
       if (error instanceof Error) {
         Alert.alert(error.message);
@@ -116,7 +108,7 @@ export default function Account() {
       </View>
 
       <View style={styles.verticallySpaced}>
-        <Button onPress={() => supabase.auth.signOut()}>
+        <Button onPress={() => useAuthStore.getState().signOut()}>
           <Text>Sign Out</Text>
         </Button>
       </View>

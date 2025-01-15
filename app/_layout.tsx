@@ -11,11 +11,11 @@ import { useState, useEffect } from 'react';
 import { Pressable, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import Account from '~/components/Account';
 import Auth from '~/components/Auth';
 import { ThemeToggle } from '~/components/ThemeToggle';
 import { cn } from '~/lib/cn';
 import { useColorScheme, useInitialAndroidBarSync } from '~/lib/useColorScheme';
+import { useAuthStore } from '~/stores/useAuthStore';
 import { NAV_THEME } from '~/theme';
 import { supabase } from '~/utils/supabase';
 
@@ -29,15 +29,25 @@ export default function RootLayout() {
   const { colorScheme, isDarkColorScheme } = useColorScheme();
 
   const [session, setSession] = useState<Session | null>(null);
+  const setAuthStoreSession = useAuthStore((state) => state.setSession);
 
   useEffect(() => {
+    // Set initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      setAuthStoreSession(session);
       setSession(session);
     });
 
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAuthStoreSession(session);
     });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const MainApp = () => {
