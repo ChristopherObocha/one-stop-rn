@@ -24,6 +24,7 @@ export default function Account() {
   }) {
     try {
       if (!session?.user) throw new Error('No user on the session!');
+      // console.log('Profile avatar_url', avatar_url);
 
       const updates = {
         id: session?.user.id,
@@ -41,7 +42,6 @@ export default function Account() {
       }
 
       setProfile({ username, website, avatar_url });
-      console.log('Profile updated', profile);
     } catch (error) {
       if (error instanceof Error) {
         console.log('Error updating profile', error);
@@ -49,6 +49,8 @@ export default function Account() {
       }
     }
   }
+
+  console.log('Profile avatar_url', avatarUrl);
 
   return (
     <View style={styles.container}>

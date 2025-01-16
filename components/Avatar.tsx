@@ -12,7 +12,7 @@ interface Props {
 
 export default function Avatar({ url, size = 150, onUpload }: Props) {
   const [uploading, setUploading] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(url ?? null);
   const avatarSize = { height: size, width: size };
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
       }
 
       const image = result.assets[0];
-      // console.log('Got image', image);
+      console.log('Got image', image);
 
       if (!image.uri) {
         throw new Error('No image uri!'); // Realistically, this should never happen, but just in case...
@@ -66,14 +66,14 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
       const arraybuffer = await fetch(image.uri).then((res) => res.arrayBuffer());
 
       const fileExt = image.uri?.split('.').pop()?.toLowerCase() ?? 'jpeg';
+      const fileName = `${Date.now()}.${fileExt}`;
       const path = `${Date.now()}.${fileExt}`;
+      console.log('updating profile: ', path, ' ', arraybuffer);
       const { data, error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(path, arraybuffer, {
-          contentType: image.mimeType ?? 'image/jpeg',
+        .upload(fileName, arraybuffer, {
+          contentType: `image/${fileExt}`,
         });
-
-      console.log('updating profile: ', data);
 
       if (uploadError) {
         throw uploadError;
@@ -116,7 +116,7 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
 
 const styles = StyleSheet.create({
   avatar: {
-    borderRadius: 5,
+    borderRadius: 50,
     overflow: 'hidden',
     maxWidth: '100%',
   },
@@ -129,6 +129,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: 'rgb(200, 200, 200)',
-    borderRadius: 5,
+    borderRadius: 50,
   },
 });
