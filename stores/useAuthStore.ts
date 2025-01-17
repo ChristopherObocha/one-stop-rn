@@ -42,7 +42,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       const { data, error, status } = await supabase
         .from('profiles')
-        .select(`username, website, avatar_url`)
+        .select(`username, website, avatar_url, updated_at`)
         .eq('id', session.user.id)
         .single();
 

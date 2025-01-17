@@ -12,7 +12,7 @@ export default function Account() {
   const [username, setUsername] = useState(profile?.username ?? '');
   const [website, setWebsite] = useState(profile?.website ?? '');
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url ?? '');
-
+  // const [updatedAt, setUpdatedAt] = useState(profile?.updated_at ?? '');
   async function updateProfile({
     username,
     website,
@@ -49,8 +49,6 @@ export default function Account() {
       }
     }
   }
-
-  console.log('Profile avatar_url', avatarUrl);
 
   return (
     <View style={styles.container}>
