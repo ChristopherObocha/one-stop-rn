@@ -4,9 +4,10 @@ import { create } from 'zustand';
 import { supabase } from '~/utils/supabase';
 
 interface Profile {
-  username: string | null;
-  website: string | null;
-  avatar_url: string | null;
+  username: string;
+  website: string;
+  avatar_url: string;
+  updated_at?: string | Date;
 }
 
 interface AuthState {

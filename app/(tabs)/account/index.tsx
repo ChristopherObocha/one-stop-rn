@@ -12,7 +12,9 @@ export default function Account() {
   const [username, setUsername] = useState(profile?.username ?? '');
   const [website, setWebsite] = useState(profile?.website ?? '');
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url ?? '');
-  // const [updatedAt, setUpdatedAt] = useState(profile?.updated_at ?? '');
+  const updatedAt = profile?.updated_at ?? '';
+
+  console.log('profile: ', typeof profile?.updated_at);
   async function updateProfile({
     username,
     website,
@@ -31,7 +33,7 @@ export default function Account() {
         username,
         website,
         avatar_url,
-        updated_at: new Date(),
+        updated_at: new Date().toISOString(),
       };
 
       const { error } = await supabase.from('profiles').upsert(updates);
@@ -41,7 +43,12 @@ export default function Account() {
         throw error;
       }
 
-      setProfile({ username, website, avatar_url });
+      setProfile({
+        username,
+        website,
+        avatar_url,
+        // updated_at: new Date().toISOString(),
+      });
     } catch (error) {
       if (error instanceof Error) {
         console.log('Error updating profile', error);
@@ -92,6 +99,9 @@ export default function Account() {
         <Button onPress={() => useAuthStore.getState().signOut()}>
           <Text>Sign Out</Text>
         </Button>
+      </View>
+      <View style={styles.verticallySpaced}>
+        <Text>Updated at: {updatedAt as string}</Text>
       </View>
     </ScrollView>
   );
