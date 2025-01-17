@@ -1,66 +1,44 @@
-// import axios from 'axios';
+import { Image } from 'expo-image';
 import { Stack } from 'expo-router';
-import { useEffect, useState, useCallback } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { ActivityIndicator } from '~/components/nativewindui/ActivityIndicator';
 import { Text } from '~/components/nativewindui/Text';
+import { Spacer } from '~/utils/Spacer';
+import { constants, Hotel } from '~/utils/constants';
 
-const API_URL = 'https://booking-com15.p.rapidapi.com/api/v1/hotels/searchDestination?query=man';
-const API_OPTIONS = {
-  method: 'GET',
-  headers: {
-    'x-rapidapi-key': '2c964c95c5msh955042ea31151c5p14714djsn9777c2d3252d',
-    'x-rapidapi-host': 'booking-com15.p.rapidapi.com',
-  },
-} as const;
+const { DEFAULT_HOTELS } = constants;
 
 export default function Home() {
-  const [data, setData] = useState<any[] | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const fetchDefaultHotels = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(API_URL, API_OPTIONS);
-      const result = await response.json();
-      setData(result?.data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchDefaultHotels();
-  }, [fetchDefaultHotels]);
-
-  console.log('data: ', data);
+  const hotelData = DEFAULT_HOTELS;
 
   const HotelCard = ({ hotel }: { hotel: any }) => {
-    console.log(hotel);
     return (
       <View style={styles.hotelCard}>
-        <Text>{hotel.name}</Text>
+        <Image source={hotel.image_url} style={styles.hotelImage} />
+        <View style={styles.hotelInfo}>
+          <Text variant="heading" style={styles.hotelName}>
+            {hotel.name}
+          </Text>
+          <Spacer size={10} vertical />
+          <Text variant="body" style={styles.hotelLocation}>
+            {`${hotel.city_name}, ${hotel.country}`}
+          </Text>
+        </View>
       </View>
     );
   };
 
-  if (isLoading) {
-    return <ActivityIndicator />;
-  }
-
   return (
     <>
       <Stack.Screen options={{ title: 'Tab Two' }} />
-      <View style={styles.container}>
-        {/* <ScreenContent path="app/(tabs)/two.tsx" title="Tab Two" />
-         */}
-        <ScrollView style={{ flex: 1 }} horizontal>
-          {data?.map((hotel) => <HotelCard key={hotel.id} hotel={hotel} />)}
+      <ScrollView style={styles.container}>
+        <ScrollView style={styles.scrollView} horizontal showsHorizontalScrollIndicator={false}>
+          {hotelData?.data?.map((hotel: Hotel, index: number) => (
+            <HotelCard key={`${hotel.dest_id}-${index}`} hotel={hotel} />
+          ))}
         </ScrollView>
-      </View>
+        <Spacer size={10} vertical />
+      </ScrollView>
     </>
   );
 }
@@ -68,15 +46,35 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 24,
+    paddingHorizontal: 15,
+    paddingVertical: 24,
+  },
+  scrollView: {
+    flexDirection: 'row',
   },
   hotelCard: {
     backgroundColor: 'white',
-    padding: 10,
     marginBottom: 10,
-    height: 100,
-    // width: 60,
+    maxHeight: 200,
+    width: 180,
     marginRight: 10,
     borderRadius: 10,
+    paddingBottom: 10,
+  },
+  hotelImage: {
+    height: 100,
+    overflow: 'hidden',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  hotelInfo: {
+    padding: 10,
+  },
+  hotelName: {
+    fontWeight: 'bold',
+  },
+  hotelLocation: {
+    color: 'gray',
+    lineHeight: 18,
   },
 });
