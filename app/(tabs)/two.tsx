@@ -1,19 +1,18 @@
 // import axios from 'axios';
 import { Stack } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
 import { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
 import { ScreenContent } from '~/components/ScreenContent';
 
 export default function Home() {
-  const url =
-    'https://tripadvisor16.p.rapidapi.com/api/v1/restaurant/searchRestaurants?locationId=304554';
+  const url = 'https://booking-com15.p.rapidapi.com/api/v1/hotels/searchDestination?query=man';
   const options = {
     method: 'GET',
     // url: 'https://tripadvisor16.p.rapidapi.com/api/v1/hotels/searchLocation',
     headers: {
       'x-rapidapi-key': '2c964c95c5msh955042ea31151c5p14714djsn9777c2d3252d',
-      'x-rapidapi-host': 'tripadvisor16.p.rapidapi.com',
+      'x-rapidapi-host': 'booking-com15.p.rapidapi.com',
     },
   };
   const [data, setData] = useState<any[] | null>(null);
@@ -27,7 +26,7 @@ export default function Home() {
       // const response = await axios.request(options);
       const response = await fetch(url, options);
       const result = await response.json();
-      console.log(result);
+      // console.log(result);
       setData(result?.data?.data);
     } catch (error) {
       console.error(error);
