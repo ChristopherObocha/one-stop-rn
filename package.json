@@ -7,6 +7,7 @@
     "ios": "expo run:ios",
     "android": "expo run:android",
     "build:dev": "eas build --profile development",
+    "build:dev-simulator": "eas build --profile development-simulator",
     "build:preview": "eas build --profile preview",
     "build:prod": "eas build --profile production",
     "prebuild": "expo prebuild",
