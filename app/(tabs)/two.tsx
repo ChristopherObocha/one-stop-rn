@@ -3,7 +3,7 @@ import { Stack } from 'expo-router';
 import { useEffect, useState, useCallback } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-// import { ScreenContent } from '~/components/ScreenContent';
+import { ActivityIndicator } from '~/components/nativewindui/ActivityIndicator';
 import { Text } from '~/components/nativewindui/Text';
 
 const API_URL = 'https://booking-com15.p.rapidapi.com/api/v1/hotels/searchDestination?query=man';
@@ -48,11 +48,7 @@ export default function Home() {
   };
 
   if (isLoading) {
-    return (
-      <View style={styles.container}>
-        <Text>Loading...</Text>
-      </View>
-    );
+    return <ActivityIndicator />;
   }
 
   return (
@@ -61,7 +57,7 @@ export default function Home() {
       <View style={styles.container}>
         {/* <ScreenContent path="app/(tabs)/two.tsx" title="Tab Two" />
          */}
-        <ScrollView style={{ flex: 1, backgroundColor: 'red' }} horizontal>
+        <ScrollView style={{ flex: 1 }} horizontal>
           {data?.map((hotel) => <HotelCard key={hotel.id} hotel={hotel} />)}
         </ScrollView>
       </View>
@@ -75,11 +71,11 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   hotelCard: {
-    backgroundColor: 'grey',
+    backgroundColor: 'white',
     padding: 10,
     marginBottom: 10,
     height: 100,
-    width: 60,
+    // width: 60,
     marginRight: 10,
     borderRadius: 10,
   },
