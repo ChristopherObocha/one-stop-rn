@@ -1,6 +1,7 @@
 // import axios from 'axios';
 import { Stack } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
+import { useEffect, useState } from 'react';
 
 import { ScreenContent } from '~/components/ScreenContent';
 
@@ -15,19 +16,23 @@ export default function Home() {
       'x-rapidapi-host': 'tripadvisor16.p.rapidapi.com',
     },
   };
+  const [data, setData] = useState<any[] | null>(null);
+
+  useEffect(() => {
+    fetchDefaultHotels();
+  }, []);
 
   const fetchDefaultHotels = async () => {
     try {
       // const response = await axios.request(options);
       const response = await fetch(url, options);
-      const result = await response.text();
-      console.log(JSON.stringify(response, null, 2));
+      const result = await response.json();
+      console.log(result);
+      setData(result?.data?.data);
     } catch (error) {
       console.error(error);
     }
   };
-
-  fetchDefaultHotels();
 
   return (
     <>
