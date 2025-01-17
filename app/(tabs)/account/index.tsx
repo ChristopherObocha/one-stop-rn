@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StyleSheet, View, Alert, Text } from 'react-native';
+import { ScrollView, StyleSheet, View, Alert, Text } from 'react-native';
 
 import Avatar from '~/components/Avatar';
 import { Button } from '~/components/nativewindui/Button';
@@ -51,8 +51,8 @@ export default function Account() {
   }
 
   return (
-    <View style={styles.container}>
-      <View>
+    <ScrollView style={styles.container}>
+      <View style={styles.avatarContainer}>
         <Avatar
           size={200}
           url={avatarUrl}
@@ -93,7 +93,7 @@ export default function Account() {
           <Text>Sign Out</Text>
         </Button>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -101,6 +101,10 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 40,
     padding: 12,
+  },
+  avatarContainer: {
+    alignItems: 'center',
+    alignSelf: 'center',
   },
   verticallySpaced: {
     paddingTop: 4,
