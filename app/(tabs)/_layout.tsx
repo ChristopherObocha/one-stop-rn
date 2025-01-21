@@ -32,7 +32,7 @@ export default function TabLayout() {
         name="account/index"
         options={{
           title: 'Account',
-          tabBarIcon: ({ color }) => <TabBarIcon name="meetup" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="user-circle" color={color} />,
         }}
       />
     </Tabs>

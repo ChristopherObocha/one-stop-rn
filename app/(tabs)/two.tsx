@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
 import { Stack } from 'expo-router';
+import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { Text } from '~/components/nativewindui/Text';
