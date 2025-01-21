@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ScrollView, StyleSheet, View, Alert, Text } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import Avatar from '~/components/Avatar';
 import { Button } from '~/components/nativewindui/Button';
@@ -14,7 +15,12 @@ export default function Account() {
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url ?? '');
   const updatedAt = profile?.updated_at ?? '';
 
-  console.log('profile: ', typeof profile?.updated_at);
+  const insets = useSafeAreaInsets();
+  const backgroundStyle = {
+    paddingTop: insets.top + 20,
+    paddingBottom: insets.bottom + 20,
+  };
+
   async function updateProfile({
     username,
     website,
@@ -58,7 +64,7 @@ export default function Account() {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[styles.container, backgroundStyle]}>
       <View style={styles.avatarContainer}>
         <Avatar
           size={200}

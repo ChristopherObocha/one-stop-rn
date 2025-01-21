@@ -29,10 +29,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="account/index"
+        name="account"
         options={{
           title: 'Account',
           tabBarIcon: ({ color }) => <TabBarIcon name="user-circle" color={color} />,
+          headerShown: false,
         }}
       />
     </Tabs>

@@ -4,10 +4,9 @@ import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { ThemeProvider as NavThemeProvider } from '@react-navigation/native';
 import { Icon } from '@roninoss/icons';
-import { Session } from '@supabase/supabase-js';
 import { Link, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Pressable, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -17,7 +16,6 @@ import { cn } from '~/lib/cn';
 import { useColorScheme, useInitialAndroidBarSync } from '~/lib/useColorScheme';
 import { useAuthStore } from '~/stores/useAuthStore';
 import { NAV_THEME } from '~/theme';
-import { supabase } from '~/utils/supabase';
 
 export {
   // Catch any errors thrown by the Layout component.
