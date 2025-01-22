@@ -8,9 +8,17 @@ interface Props {
   size: number;
   url: string | null;
   onUpload: (filePath: string) => void;
+  editable?: boolean;
+  name?: string;
 }
 
-export default function Avatar({ url, size = 150, onUpload }: Props) {
+export default function Avatar({
+  url = null,
+  size = 150,
+  onUpload,
+  editable = false,
+  name,
+}: Props) {
   const [uploading, setUploading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(url ?? null);
   const avatarSize = { height: size, width: size };
@@ -93,6 +101,8 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
     }
   }
 
+  console.log('editable: ', url);
+
   return (
     <View>
       {avatarUrl ? (
@@ -104,13 +114,15 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
       ) : (
         <View style={[avatarSize, styles.avatar, styles.noImage]} />
       )}
-      <View>
-        <Button
-          title={uploading ? 'Uploading ...' : 'Upload'}
-          onPress={uploadAvatar}
-          disabled={uploading}
-        />
-      </View>
+      {editable && (
+        <View>
+          <Button
+            title={uploading ? 'Uploading ...' : 'Upload'}
+            onPress={uploadAvatar}
+            disabled={uploading}
+          />
+        </View>
+      )}
     </View>
   );
 }

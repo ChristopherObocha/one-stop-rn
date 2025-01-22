@@ -1,11 +1,17 @@
 import { useState } from 'react';
-import { ScrollView, StyleSheet, View, Alert, Text } from 'react-native';
+import { ScrollView, StyleSheet, View, Alert, Platform, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import Avatar from '~/components/Avatar';
+// import Avatar from '~/components/Avatar';
+import { Avatar, AvatarFallback } from '~/components/nativewindui/Avatar';
 import { Button } from '~/components/nativewindui/Button';
+// import { Text } from '~/components/nativewindui/Text';
 import { TextField } from '~/components/nativewindui/TextField';
+import { cn } from '~/lib/cn';
+import { useColorScheme } from '~/lib/useColorScheme';
 import { useAuthStore } from '~/stores/useAuthStore';
+import { COLORS } from '~/theme/colors';
+import { Spacer } from '~/utils/Spacer';
 import { supabase } from '~/utils/supabase';
 
 export default function Account() {
@@ -16,9 +22,12 @@ export default function Account() {
   const updatedAt = profile?.updated_at ?? '';
 
   const insets = useSafeAreaInsets();
-  const backgroundStyle = {
-    paddingTop: insets.top + 20,
-    paddingBottom: insets.bottom + 20,
+
+  const colorScheme = useColorScheme();
+  const { colors } = colorScheme;
+
+  const textColor = {
+    color: colors.foreground,
   };
 
   async function updateProfile({
@@ -63,17 +72,61 @@ export default function Account() {
     }
   }
 
+  const styles = StyleSheet.create({
+    container: {
+      marginTop: 40,
+      padding: 12,
+      paddingTop: insets.top,
+      paddingBottom: insets.bottom + 20,
+    },
+    avatarContainer: {
+      alignItems: 'center',
+      alignSelf: 'center',
+    },
+    verticallySpaced: {
+      paddingTop: 4,
+      paddingBottom: 4,
+      alignSelf: 'stretch',
+    },
+    mt20: {
+      marginTop: 20,
+    },
+    titleContainer: {
+      borderBottomWidth: 1,
+      borderBottomColor: colors.grey4,
+    },
+    title: {
+      fontSize: 34, // equivalent to text-4xl
+      fontWeight: '500', // equivalent to font-medium
+      color: COLORS.black,
+    },
+    avatarText: {
+      fontSize: 34, // equivalent to text-4xl
+      fontWeight: '500', // equivalent to font-medium
+      color: colors.background,
+    },
+  });
+
   return (
-    <ScrollView style={[styles.container, backgroundStyle]}>
+    <ScrollView style={styles.container}>
+      <View style={styles.titleContainer}>
+        <Text style={[styles.title, textColor]}>Profile</Text>
+      </View>
+      <Spacer size={20} vertical />
       <View style={styles.avatarContainer}>
-        <Avatar
+        {/* <Avatar
           size={200}
           url={avatarUrl}
           onUpload={(url: string) => {
             setAvatarUrl(url);
             updateProfile({ username, website, avatar_url: url });
           }}
-        />
+        /> */}
+        <Avatar alt="Zach Nugent's Profile" className="h-24 w-24">
+          <AvatarFallback>
+            <Text style={styles.avatarText}>ZN</Text>
+          </AvatarFallback>
+        </Avatar>
       </View>
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <TextField label="Email" value={session?.user?.email} />
@@ -112,22 +165,3 @@ export default function Account() {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 40,
-    padding: 12,
-  },
-  avatarContainer: {
-    alignItems: 'center',
-    alignSelf: 'center',
-  },
-  verticallySpaced: {
-    paddingTop: 4,
-    paddingBottom: 4,
-    alignSelf: 'stretch',
-  },
-  mt20: {
-    marginTop: 20,
-  },
-});
