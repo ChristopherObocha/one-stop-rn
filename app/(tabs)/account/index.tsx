@@ -87,7 +87,6 @@ export default function Account() {
   const styles = StyleSheet.create({
     container: {
       marginTop: 40,
-      padding: 12,
       paddingTop: insets.top,
       paddingBottom: insets.bottom + 20,
     },
@@ -99,6 +98,7 @@ export default function Account() {
       paddingTop: 4,
       paddingBottom: 4,
       alignSelf: 'stretch',
+      paddingHorizontal: 15,
     },
     mt20: {
       marginTop: 20,
@@ -106,6 +106,7 @@ export default function Account() {
     titleContainer: {
       borderBottomWidth: 1,
       borderBottomColor: colors.grey4,
+      paddingHorizontal: 12,
     },
     title: {
       fontSize: 34, // equivalent to text-4xl
@@ -158,6 +159,16 @@ export default function Account() {
         />
       </View>
 
+      {/* LIST */}
+      <List
+        variant="insets"
+        data={DATA}
+        sectionHeaderAsGap={Platform.OS === 'ios'}
+        estimatedItemSize={ESTIMATED_ITEM_SIZE}
+        renderItem={renderItem}
+      />
+
+      {/* BUTTONS  */}
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Button
           onPress={() => updateProfile({ username, website, avatar_url: avatarUrl })}
@@ -166,18 +177,6 @@ export default function Account() {
         </Button>
       </View>
 
-      {/* LIST */}
-      <List
-        variant="insets"
-        data={DATA}
-        sectionHeaderAsGap={Platform.OS === 'ios'}
-        estimatedItemSize={ESTIMATED_ITEM_SIZE}
-        renderItem={renderItem}
-        // ListHeaderComponent={<ListHeaderComponent />}
-        // ListFooterComponent={<ListFooterComponent />}
-      />
-
-      {/* BUTTONS  */}
       <View style={styles.verticallySpaced}>
         <Button onPress={() => useAuthStore.getState().signOut()}>
           <Text>Sign Out</Text>
@@ -224,18 +223,6 @@ type DataItem = {
 };
 
 const DATA: DataItem[] = [
-  {
-    id: 'name',
-    title: 'Name',
-    ...(Platform.OS === 'ios' ? { value: 'Zach Nugent' } : { subTitle: 'Zach Nugent' }),
-    onPress: () => router.push('/profile/name'),
-  },
-  {
-    id: 'username',
-    title: 'Username',
-    ...(Platform.OS === 'ios' ? { value: '@mrzachnugent' } : { subTitle: '@mrzachnugent' }),
-    onPress: () => router.push('/profile/username'),
-  },
   {
     id: '4',
     title: 'Notifications',
