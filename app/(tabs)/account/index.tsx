@@ -1,4 +1,5 @@
 import { Icon } from '@roninoss/icons';
+import { format } from 'date-fns';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -16,8 +17,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 // import Avatar from '~/components/Avatar';
 import { ActivityIndicator } from '~/components/nativewindui/ActivityIndicator';
 import { Avatar, AvatarFallback } from '~/components/nativewindui/Avatar';
-// import { Button } from '~/components/nativewindui/Button';
-// import { Text } from '~/components/nativewindui/Text';
 import {
   ESTIMATED_ITEM_HEIGHT,
   List,
@@ -36,10 +35,9 @@ import { supabase } from '~/utils/supabase';
 export default function Account() {
   const { session, profile, setProfile, loading } = useAuthStore();
   const [username, setUsername] = useState(profile?.username ?? '');
-  const [website, setWebsite] = useState(profile?.website ?? '');
+  const website = profile?.website ?? '';
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url ?? '');
   const updatedAt = profile?.updated_at ?? '';
-  console.log('profile', loading);
 
   const insets = useSafeAreaInsets();
 
@@ -111,9 +109,14 @@ export default function Account() {
       alignSelf: 'center',
     },
     buttonText: {
-      color: colors.foreground,
+      color: colors.background,
       fontSize: 16,
       fontWeight: '500',
+    },
+    emphasis: {
+      fontWeight: 'bold',
+      color: colors.grey,
+      fontSize: 16,
     },
     contentContainer: {
       paddingBottom: 70,
@@ -136,6 +139,20 @@ export default function Account() {
     mt20: {
       marginTop: 20,
     },
+    paddingHorizontal: {
+      paddingHorizontal: 15,
+      flex: 1,
+    },
+    text: {
+      fontSize: 16,
+      fontWeight: '500',
+      color: colors.foreground,
+    },
+    textHeaderContainer: {
+      alignSelf: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 15,
+    },
     titleContainer: {
       paddingHorizontal: 15,
     },
@@ -145,7 +162,7 @@ export default function Account() {
       color: COLORS.black,
     },
     avatarText: {
-      fontSize: 34, // equivalent to text-4xl
+      fontSize: 40, // equivalent to text-4xl
       fontWeight: '500', // equivalent to font-medium
       color: colors.background,
     },
@@ -166,31 +183,28 @@ export default function Account() {
             updateProfile({ username, website, avatar_url: url });
           }}
         /> */}
-        <Avatar alt="Zach Nugent's Profile" className="h-24 w-24">
+        <Avatar alt="Zach Nugent's Profile" className="h-48 w-48">
           <AvatarFallback>
             <Text style={styles.avatarText}>ZN</Text>
           </AvatarFallback>
         </Avatar>
       </View>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <TextField label="Email" value={session?.user?.email} />
+      <Spacer size={20} vertical />
+      <View style={styles.textHeaderContainer}>
+        <Text style={styles.text}>{username}</Text>
+        <Spacer size={8} vertical />
+        <Text style={styles.emphasis}>{session?.user?.email}</Text>
       </View>
-      <View style={styles.verticallySpaced}>
-        <TextField
-          label="Username"
-          value={username || ''}
-          onChangeText={(text) => setUsername(text)}
-        />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <TextField
-          label="Website"
-          value={website || ''}
-          onChangeText={(text) => setWebsite(text)}
-        />
+      <Spacer size={30} vertical />
+
+      <View style={styles.paddingHorizontal}>
+        <Text style={styles.text}>
+          Last updated on: <Text style={styles.emphasis}>{format(updatedAt, 'MM/dd/yyyy')}</Text>
+        </Text>
       </View>
 
       {/* LIST */}
+      <Spacer size={10} vertical />
       <List
         variant="insets"
         data={DATA}
@@ -208,14 +222,11 @@ export default function Account() {
       </TouchableOpacity>
 
       <Spacer size={20} vertical />
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={() => useAuthStore.getState().signOut()}>
-          <Text style={[styles.buttonText, { color: colors.destructive }]}>Sign Out</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Text>Updated at: {updatedAt as string}</Text>
-      </View>
+      <TouchableOpacity
+        onPress={() => useAuthStore.getState().signOut()}
+        style={styles.buttonContainer}>
+        <Text style={[styles.buttonText, { color: colors.destructive }]}>Sign Out</Text>
+      </TouchableOpacity>
 
       {/* FOOTER  */}
       <Spacer size={40} vertical />
@@ -257,6 +268,12 @@ type DataItem = {
 };
 
 const DATA: DataItem[] = [
+  {
+    id: '4',
+    title: 'Personal Information',
+    ...(Platform.OS === 'ios' ? { value: 'Push' } : { subTitle: 'Push' }),
+    onPress: () => router.push('/profile/notifications'),
+  },
   {
     id: '4',
     title: 'Notifications',
