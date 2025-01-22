@@ -1,7 +1,7 @@
 import { Icon } from '@roninoss/icons';
 import { format } from 'date-fns';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React from 'react';
 import {
   TouchableOpacity,
   ScrollView,
@@ -34,9 +34,9 @@ import { supabase } from '~/utils/supabase';
 
 export default function Account() {
   const { session, profile, setProfile, loading } = useAuthStore();
-  const [username, setUsername] = useState(profile?.username ?? '');
+  const username = profile?.username ?? '';
   const website = profile?.website ?? '';
-  const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url ?? '');
+  const avatarUrl = profile?.avatar_url ?? '';
   const updatedAt = profile?.updated_at ?? '';
 
   const insets = useSafeAreaInsets();
