@@ -1,11 +1,20 @@
-import { useState } from 'react';
-import { ScrollView, StyleSheet, View, Alert, Platform, Text } from 'react-native';
+import { Icon } from '@roninoss/icons';
+import { router } from 'expo-router';
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, View, Alert, Platform, Text, Linking } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // import Avatar from '~/components/Avatar';
 import { Avatar, AvatarFallback } from '~/components/nativewindui/Avatar';
 import { Button } from '~/components/nativewindui/Button';
 // import { Text } from '~/components/nativewindui/Text';
+import {
+  ESTIMATED_ITEM_HEIGHT,
+  List,
+  ListItem,
+  ListRenderItemInfo,
+  ListSectionHeader,
+} from '~/components/nativewindui/List';
 import { TextField } from '~/components/nativewindui/TextField';
 import { cn } from '~/lib/cn';
 import { useColorScheme } from '~/lib/useColorScheme';
@@ -25,6 +34,9 @@ export default function Account() {
 
   const colorScheme = useColorScheme();
   const { colors } = colorScheme;
+
+  const ESTIMATED_ITEM_SIZE =
+    ESTIMATED_ITEM_HEIGHT[Platform.OS === 'ios' ? 'titleOnly' : 'withSubTitle'];
 
   const textColor = {
     color: colors.foreground,
@@ -154,6 +166,18 @@ export default function Account() {
         </Button>
       </View>
 
+      {/* LIST */}
+      <List
+        variant="insets"
+        data={DATA}
+        sectionHeaderAsGap={Platform.OS === 'ios'}
+        estimatedItemSize={ESTIMATED_ITEM_SIZE}
+        renderItem={renderItem}
+        // ListHeaderComponent={<ListHeaderComponent />}
+        // ListFooterComponent={<ListFooterComponent />}
+      />
+
+      {/* BUTTONS  */}
       <View style={styles.verticallySpaced}>
         <Button onPress={() => useAuthStore.getState().signOut()}>
           <Text>Sign Out</Text>
@@ -165,3 +189,69 @@ export default function Account() {
     </ScrollView>
   );
 }
+
+export function renderItem(info: ListRenderItemInfo<DataItem>) {
+  return <Item info={info} />;
+}
+
+function Item({ info }: { info: ListRenderItemInfo<DataItem> }) {
+  const { colors } = useColorScheme();
+
+  if (typeof info.item === 'string') {
+    return <ListSectionHeader {...info} />;
+  }
+  return (
+    <ListItem
+      titleClassName="text-lg"
+      rightView={
+        <View className="flex-1 flex-row items-center gap-0.5 px-2">
+          {!!info.item.value && <Text className="text-muted-foreground">{info.item.value}</Text>}
+          <Icon name="chevron-right" size={22} color={colors.grey2} />
+        </View>
+      }
+      onPress={info.item.onPress}
+      {...info}
+    />
+  );
+}
+
+type DataItem = {
+  id: string;
+  title: string;
+  value?: string;
+  subTitle?: string;
+  onPress: () => void;
+};
+
+const DATA: DataItem[] = [
+  {
+    id: 'name',
+    title: 'Name',
+    ...(Platform.OS === 'ios' ? { value: 'Zach Nugent' } : { subTitle: 'Zach Nugent' }),
+    onPress: () => router.push('/profile/name'),
+  },
+  {
+    id: 'username',
+    title: 'Username',
+    ...(Platform.OS === 'ios' ? { value: '@mrzachnugent' } : { subTitle: '@mrzachnugent' }),
+    onPress: () => router.push('/profile/username'),
+  },
+  {
+    id: '4',
+    title: 'Notifications',
+    ...(Platform.OS === 'ios' ? { value: 'Push' } : { subTitle: 'Push' }),
+    onPress: () => router.push('/profile/notifications'),
+  },
+  {
+    id: '6',
+    title: 'Support',
+    ...(Platform.OS === 'ios' ? { value: 'Discord' } : { subTitle: 'Discord' }),
+    onPress: () => Linking.openURL('https://nativewindui.com/discord'),
+  },
+  {
+    id: '7',
+    title: 'About',
+    ...(Platform.OS === 'ios' ? { value: 'NativeWindUI' } : { subTitle: 'NativeWindUI' }),
+    onPress: () => Linking.openURL('https://nativewindui.com/'),
+  },
+];
