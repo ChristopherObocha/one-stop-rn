@@ -1,12 +1,22 @@
 import { Icon } from '@roninoss/icons';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, View, Alert, Platform, Text, Linking } from 'react-native';
+import {
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  View,
+  Alert,
+  Platform,
+  Text,
+  Linking,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // import Avatar from '~/components/Avatar';
+import { ActivityIndicator } from '~/components/nativewindui/ActivityIndicator';
 import { Avatar, AvatarFallback } from '~/components/nativewindui/Avatar';
-import { Button } from '~/components/nativewindui/Button';
+// import { Button } from '~/components/nativewindui/Button';
 // import { Text } from '~/components/nativewindui/Text';
 import {
   ESTIMATED_ITEM_HEIGHT,
@@ -29,6 +39,7 @@ export default function Account() {
   const [website, setWebsite] = useState(profile?.website ?? '');
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url ?? '');
   const updatedAt = profile?.updated_at ?? '';
+  console.log('profile', loading);
 
   const insets = useSafeAreaInsets();
 
@@ -94,6 +105,28 @@ export default function Account() {
       alignItems: 'center',
       alignSelf: 'center',
     },
+    buttonContainer: {
+      paddingHorizontal: 15,
+      paddingVertical: 10,
+      alignSelf: 'center',
+    },
+    buttonText: {
+      color: colors.foreground,
+      fontSize: 16,
+      fontWeight: '500',
+    },
+    contentContainer: {
+      paddingBottom: 70,
+    },
+    ctaButton: {
+      backgroundColor: colors.primary,
+      borderRadius: 10,
+      paddingVertical: 10,
+      paddingHorizontal: 15,
+      width: '80%',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
     verticallySpaced: {
       paddingTop: 4,
       paddingBottom: 4,
@@ -104,9 +137,7 @@ export default function Account() {
       marginTop: 20,
     },
     titleContainer: {
-      borderBottomWidth: 1,
-      borderBottomColor: colors.grey4,
-      paddingHorizontal: 12,
+      paddingHorizontal: 15,
     },
     title: {
       fontSize: 34, // equivalent to text-4xl
@@ -121,7 +152,7 @@ export default function Account() {
   });
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <View style={styles.titleContainer}>
         <Text style={[styles.title, textColor]}>Profile</Text>
       </View>
@@ -169,22 +200,25 @@ export default function Account() {
       />
 
       {/* BUTTONS  */}
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Button
-          onPress={() => updateProfile({ username, website, avatar_url: avatarUrl })}
-          disabled={loading}>
-          <Text>{loading ? 'Loading ...' : 'Update'}</Text>
-        </Button>
-      </View>
+      <Spacer size={40} vertical />
+      <TouchableOpacity
+        onPress={() => updateProfile({ username, website, avatar_url: avatarUrl })}
+        style={[styles.buttonContainer, styles.ctaButton]}>
+        {loading ? <ActivityIndicator /> : <Text style={styles.buttonText}>Update</Text>}
+      </TouchableOpacity>
 
-      <View style={styles.verticallySpaced}>
-        <Button onPress={() => useAuthStore.getState().signOut()}>
-          <Text>Sign Out</Text>
-        </Button>
+      <Spacer size={20} vertical />
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={() => useAuthStore.getState().signOut()}>
+          <Text style={[styles.buttonText, { color: colors.destructive }]}>Sign Out</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.verticallySpaced}>
         <Text>Updated at: {updatedAt as string}</Text>
       </View>
+
+      {/* FOOTER  */}
+      <Spacer size={40} vertical />
     </ScrollView>
   );
 }
