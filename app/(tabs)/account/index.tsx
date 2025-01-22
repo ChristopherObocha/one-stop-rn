@@ -11,6 +11,7 @@ import {
   Platform,
   Text,
   Linking,
+  TextStyle,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -24,12 +25,11 @@ import {
   ListRenderItemInfo,
   ListSectionHeader,
 } from '~/components/nativewindui/List';
-import { TextField } from '~/components/nativewindui/TextField';
-import { cn } from '~/lib/cn';
 import { useColorScheme } from '~/lib/useColorScheme';
 import { useAuthStore } from '~/stores/useAuthStore';
 import { COLORS } from '~/theme/colors';
 import { Spacer } from '~/utils/Spacer';
+import { textStyles } from '~/utils/styles';
 import { supabase } from '~/utils/supabase';
 
 export default function Account() {
@@ -113,11 +113,6 @@ export default function Account() {
       fontSize: 16,
       fontWeight: '500',
     },
-    emphasis: {
-      fontWeight: 'bold',
-      color: colors.grey,
-      fontSize: 16,
-    },
     contentContainer: {
       paddingBottom: 70,
     },
@@ -129,6 +124,17 @@ export default function Account() {
       width: '80%',
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    emphasis: {
+      fontWeight: 'bold',
+      color: colors.grey,
+      fontSize: 16,
+      lineHeight: 16,
+    },
+    header: {
+      ...(textStyles.header1 as TextStyle),
+      color: colors.foreground,
+      fontWeight: '600',
     },
     verticallySpaced: {
       paddingTop: 4,
@@ -189,10 +195,10 @@ export default function Account() {
           </AvatarFallback>
         </Avatar>
       </View>
-      <Spacer size={20} vertical />
+      <Spacer size={24} vertical />
       <View style={styles.textHeaderContainer}>
-        <Text style={styles.text}>{username}</Text>
-        <Spacer size={8} vertical />
+        <Text style={styles.header}>{username}</Text>
+        <Spacer size={4} vertical />
         <Text style={styles.emphasis}>{session?.user?.email}</Text>
       </View>
       <Spacer size={30} vertical />
