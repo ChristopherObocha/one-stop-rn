@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "one-stop-rn",
+    "name": "Runwae",
     "slug": "one-stop-rn",
     "version": "1.0.0",
-    "scheme": "one-stop-rn",
+    "scheme": "runwae",
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -61,10 +61,12 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.chrisobocha.onestoprn",
+      "bundleIdentifier": "com.runwae.app",
       "usesAppleSignIn": true
     },
     "android": {
@@ -72,7 +74,15 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.chrisobocha.onestoprn"
+      "package": "com.runwae.app",
+      "permissions": [
+        "com.google.android.gms.permission.AD_ID",
+        "android.permission.READ_CALENDAR",
+        "android.permission.WRITE_CALENDAR",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT"
+      ]
     },
     "extra": {
       "router": {
@@ -81,6 +91,7 @@
       "eas": {
         "projectId": "2796fbcb-3299-447c-b191-6a3cbc8a40b3"
       }
-    }
+    },
+    "owner": "chrisobocha"
   }
 }

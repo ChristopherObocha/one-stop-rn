@@ -12,9 +12,11 @@ import {
   Text,
   Linking,
   TextStyle,
+  Image,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+// import Onboarding from '~/app/Onboarding';
 // import Avatar from '~/components/Avatar';
 import { ActivityIndicator } from '~/components/nativewindui/ActivityIndicator';
 import { Avatar, AvatarFallback } from '~/components/nativewindui/Avatar';
@@ -181,19 +183,14 @@ export default function Account() {
       </View>
       <Spacer size={20} vertical />
       <View style={styles.avatarContainer}>
-        {/* <Avatar
-          size={200}
-          url={avatarUrl}
-          onUpload={(url: string) => {
-            setAvatarUrl(url);
-            updateProfile({ username, website, avatar_url: url });
+        <Image
+          source={require('~/assets/images/logo.png')}
+          style={{
+            width: 200,
+            height: 200,
+            borderRadius: 100,
           }}
-        /> */}
-        <Avatar alt="Zach Nugent's Profile" className="h-48 w-48">
-          <AvatarFallback>
-            <Text style={styles.avatarText}>ZN</Text>
-          </AvatarFallback>
-        </Avatar>
+        />
       </View>
       <Spacer size={24} vertical />
       <View style={styles.textHeaderContainer}>

@@ -1,45 +1,48 @@
-import { Image } from 'expo-image';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useState } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { useColorScheme } from '~/lib/useColorScheme';
-import { COLORS } from '~/theme/colors';
-import { textStyles } from '~/utils/styles';
+import Slide from '~/components/onboarding/slide';
+import Slider from '~/components/onboarding/slider';
+import { onBoardingSlides } from '~/configs/constants';
 
-const LogoSVG = require('~/assets/svgs/logo-svg.svg');
-
-const Onboarding = () => {
-  const insets = useSafeAreaInsets();
-  const { colors } = useColorScheme();
-
-  const styles = StyleSheet.create({
-    container: {
-      paddingTop: insets.top + 20,
-      paddingBottom: insets.bottom + 20,
-      paddingHorizontal: 15,
-      backgroundColor: colors.primary,
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    logo: {
-      width: '80%',
-      height: 100,
-      color: COLORS.white,
-    },
-    title: {
-      ...textStyles.title,
-      color: COLORS.white,
-    },
-  });
+export default function OnboardingScreen() {
+  const [index, setIndex] = useState(0);
+  const prev = onBoardingSlides[index - 1];
+  const next = onBoardingSlides[index + 1];
 
   return (
-    <View style={styles.container}>
-      <Image source={LogoSVG} style={styles.logo} />
-      <Text style={styles.title}>Plan. Save. Travel Together</Text>
-    </View>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Slider
+        key={index}
+        index={index}
+        setIndex={setIndex}
+        prev={
+          prev && (
+            <Slide
+              index={index}
+              setIndex={setIndex}
+              slide={prev}
+              totalSlides={onBoardingSlides.length}
+            />
+          )
+        }
+        next={
+          next && (
+            <Slide
+              index={index}
+              setIndex={setIndex}
+              slide={next}
+              totalSlides={onBoardingSlides.length}
+            />
+          )
+        }>
+        <Slide
+          slide={onBoardingSlides[index]}
+          index={index}
+          setIndex={setIndex}
+          totalSlides={onBoardingSlides.length}
+        />
+      </Slider>
+    </GestureHandlerRootView>
   );
-};
-
-export default Onboarding;
+}

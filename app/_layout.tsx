@@ -10,13 +10,13 @@ import React, { useEffect } from 'react';
 import { Pressable, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+import Onboarding from '~/app/Onboarding';
 import Auth from '~/components/Auth';
 import { ThemeToggle } from '~/components/ThemeToggle';
 import { cn } from '~/lib/cn';
 import { useColorScheme, useInitialAndroidBarSync } from '~/lib/useColorScheme';
 import { useAuthStore } from '~/stores/useAuthStore';
 import { NAV_THEME } from '~/theme';
-
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -57,7 +57,8 @@ export default function RootLayout() {
         <BottomSheetModalProvider>
           <ActionSheetProvider>
             <NavThemeProvider value={NAV_THEME[colorScheme]}>
-              {session ? <MainApp /> : <Auth />}
+              {/* {session ? <MainApp /> : <Auth />} */}
+              {session ? <Onboarding /> : <Auth />}
             </NavThemeProvider>
           </ActionSheetProvider>
         </BottomSheetModalProvider>
